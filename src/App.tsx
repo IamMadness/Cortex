@@ -3,7 +3,7 @@ import { Sidebar } from './components/Sidebar';
 import { Thread } from './components/Thread';
 import { db } from './db/db';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Search, Command, Settings, User, Bell, Plus, Link as LinkIcon, X, Terminal, Shield, Globe, Radio, Target, Activity, Clock, History, Compass, Layout, ChevronRight, Sparkles, Zap, Hash, Layers, Trash2 } from 'lucide-react';
+import { Search, Command, Settings, User, Bell, Plus, Link as LinkIcon, X, Terminal, Shield, Globe, Radio, Target, Activity, Clock, History, Compass, Layout, ChevronRight, Sparkles, Zap, Hash, Layers, Trash2, PlusSquare, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Command as CommandMenu } from 'cmdk';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -11,6 +11,8 @@ export default function App() {
   const [activeMatterId, setActiveMatterId] = useState<number | null>(null);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
   const [isBacklinksOpen, setIsBacklinksOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [threadSearchQuery, setThreadSearchQuery] = useState('');
   
@@ -82,136 +84,112 @@ export default function App() {
     <div className="flex h-screen bg-neural-bg text-neural-text font-sans overflow-hidden selection:bg-neural-primary selection:text-neural-bg">
       {/* Temporal Background Elements */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neural-primary/5 blur-[120px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neural-secondary/5 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
-        
-        {/* Temporal Pulses */}
-        <div className="soma-pulse w-[600px] h-[600px] top-[20%] left-[30%]" />
-        <div className="soma-pulse w-[400px] h-[400px] bottom-[10%] right-[20%]" style={{ animationDelay: '-5s', background: 'radial-gradient(circle, var(--color-neural-secondary) 0%, transparent 70%)' }} />
-
-        {/* Neurotransmitters */}
-        {[...Array(40)].map((_, i) => (
-          <div 
-            key={i}
-            className="neurotransmitter"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 20}s`,
-              opacity: Math.random() * 0.3,
-              scale: Math.random() * 2
-            }}
-          />
-        ))}
+        <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-cyan-500/10 blur-[120px] rounded-full mix-blend-screen animate-blob" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-purple-500/10 blur-[120px] rounded-full mix-blend-screen animate-blob animation-delay-2000" />
+        <div className="absolute top-[20%] left-[20%] w-[40%] h-[40%] bg-pink-500/10 blur-[120px] rounded-full mix-blend-screen animate-blob animation-delay-4000" />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
       </div>
 
-      <Sidebar 
-        activeMatterId={activeMatterId} 
-        onSelectMatter={setActiveMatterId}
-        onNewMatter={handleNewMatter}
-        onPurge={handlePurge}
-      />
+      <AnimatePresence initial={false}>
+        {isSidebarOpen && (
+          <motion.div
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: 280, opacity: 1 }}
+            exit={{ width: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="overflow-hidden flex-shrink-0"
+          >
+            <Sidebar 
+              activeMatterId={activeMatterId} 
+              onSelectMatter={setActiveMatterId}
+              onNewMatter={handleNewMatter}
+              onPurge={handlePurge}
+              onOpenSettings={() => setIsSettingsOpen(true)}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       <main className="flex-1 flex flex-col min-w-0 bg-transparent relative z-10">
         {/* Cortex Header */}
-        <header className="h-24 border-b border-white/5 bg-neural-bg/40 backdrop-blur-3xl flex items-center justify-between px-12 sticky top-0 z-10">
-          <div className="flex items-center gap-10 flex-1">
+        <header className="h-16 border-b border-white/5 bg-neural-bg/80 backdrop-blur-md flex items-center justify-between px-8 sticky top-0 z-10">
+          <div className="flex items-center gap-6 flex-1">
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="p-2 -ml-4 text-white/40 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+            >
+              {isSidebarOpen ? <PanelLeftClose className="w-5 h-5" /> : <PanelLeftOpen className="w-5 h-5" />}
+            </button>
             {activeMatter ? (
-              <div className="flex items-center gap-6 flex-1">
-                <div className="flex items-center gap-3 text-[10px] text-white/20 font-mono uppercase tracking-widest font-bold">
-                  <Layers className="w-4 h-4" />
-                  <span>Synaptic Cluster</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </div>
+              <div className="flex items-center gap-4 flex-1 group/title">
                 <input
                   value={activeMatter.title}
                   onChange={(e) => handleUpdateTitle(e.target.value)}
-                  className="text-2xl font-display font-bold bg-transparent border-none focus:ring-0 p-0 w-full max-w-xl text-neural-text placeholder-white/10 tracking-tight focus:placeholder-transparent transition-all"
-                  placeholder="ENTER_CLUSTER_IDENTITY"
+                  className="text-lg font-display font-medium bg-transparent border border-transparent hover:border-white/10 focus:border-neural-primary/50 rounded-md focus:ring-0 px-2 py-1 -ml-2 w-full max-w-xl text-neural-text placeholder-white/20 tracking-tight focus:placeholder-transparent transition-all focus:bg-black/20"
+                  placeholder="Project Title..."
                 />
               </div>
             ) : (
-              <div className="flex items-center gap-4">
-                <Compass className="w-5 h-5 text-white/10" />
-                <span className="text-[10px] font-bold text-white/10 uppercase tracking-[0.4em] font-mono">Awaiting Temporal Signal</span>
+              <div className="flex items-center gap-3">
+                <Compass className="w-4 h-4 text-white/20" />
+                <span className="text-xs font-medium text-white/40">Select a project</span>
               </div>
             )}
           </div>
           
           <div className="flex-1 flex justify-center px-8">
-            <div className="relative group max-w-2xl w-full">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-neural-primary transition-colors" />
+            <div className="relative group max-w-md w-full">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-white/60 transition-colors" />
               <input 
                 value={threadSearchQuery}
                 onChange={(e) => setThreadSearchQuery(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-[2rem] py-4 pl-16 pr-24 text-base text-neural-text placeholder-white/20 focus:ring-0 focus:border-neural-primary/40 focus:bg-white/10 transition-all font-mono shadow-inner"
-                placeholder="SEARCH_NEURAL_PATHWAYS..."
+                className="w-full bg-white/5 border border-white/5 rounded-lg py-2 pl-10 pr-10 text-sm text-neural-text placeholder-white/20 focus:ring-0 focus:border-white/10 focus:bg-white/10 transition-all font-sans"
+                placeholder="Search notes..."
               />
-              <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-3">
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
                 {threadSearchQuery && (
                   <button 
                     onClick={() => setThreadSearchQuery('')}
-                    className="p-1.5 hover:bg-white/10 rounded-full text-white/20 hover:text-white transition-all"
+                    className="p-1 hover:bg-white/10 rounded text-white/40 hover:text-white transition-all"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 )}
-                <kbd className="font-mono text-[10px] bg-white/5 border border-white/10 px-3 py-1 rounded-xl text-white/20">⌘K</kbd>
+                <kbd className="font-mono text-[10px] bg-white/5 border border-white/10 px-2 py-0.5 rounded text-white/40">⌘K</kbd>
               </div>
             </div>
           </div>
           
-          <div className="flex items-center gap-8">
-            <div className="w-px h-10 bg-white/5 mx-2" />
-            
-            <button 
-              onClick={() => setIsBacklinksOpen(!isBacklinksOpen)}
-              className={`p-3.5 rounded-2xl transition-all border duration-500 ${isBacklinksOpen ? 'bg-neural-primary text-neural-bg border-neural-primary shadow-[0_0_30px_rgba(0,242,255,0.3)]' : 'bg-white/5 border-white/10 text-white/20 hover:text-neural-primary hover:border-neural-primary/40'}`}
-            >
-              <LinkIcon className="w-5.5 h-5.5" />
-            </button>
-            
-            <div className="flex items-center gap-5">
-              <div className="text-right hidden sm:block font-mono">
-                <p className="text-[10px] font-bold text-neural-text uppercase tracking-widest">Time_Weaver</p>
-                <p className="text-[8px] text-neural-primary/40 uppercase font-bold tracking-tighter">Project Architect</p>
-              </div>
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-neural-primary via-neural-info to-neural-secondary p-0.5 shadow-[0_0_30px_rgba(0,242,255,0.1)] group cursor-pointer">
-                <div className="w-full h-full rounded-[14px] bg-neural-bg flex items-center justify-center text-neural-primary text-sm font-bold font-mono group-hover:bg-transparent group-hover:text-neural-bg transition-all duration-500">
-                  TW
-                </div>
-              </div>
-            </div>
+          <div className="flex items-center gap-4">
+            {/* Removed confusing Link and User icons */}
           </div>
         </header>
 
         {/* Temporal Content Area */}
         <div className="flex-1 overflow-auto scroll-smooth custom-scrollbar relative">
           {activeMatterId ? (
-            <Thread key={activeMatterId} matterId={activeMatterId} searchQuery={threadSearchQuery} />
+            <Thread key={activeMatterId} matterId={activeMatterId} searchQuery={threadSearchQuery} onOpenMatter={setActiveMatterId} />
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-center p-12">
-              <div className="relative mb-24">
-                <div className="w-48 h-48 bg-white/5 border border-white/10 rounded-[3rem] flex items-center justify-center relative shadow-[0_0_100px_rgba(16,185,129,0.05)] animate-float">
-                  <Sparkles className="w-20 h-20 text-aether-primary" />
-                  <div className="absolute inset-0 border-2 border-aether-primary/10 rounded-[3rem] animate-[ping_4s_linear_infinite]" />
+              <div className="relative mb-12">
+                <div className="w-24 h-24 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center relative">
+                  <Sparkles className="w-8 h-8 text-white/40" />
                 </div>
-                <div className="absolute -inset-12 border border-aether-primary/5 rounded-full animate-[spin_30s_linear_infinite]" />
-                <div className="absolute -inset-24 border border-aether-secondary/5 rounded-full animate-[spin_45s_linear_infinite_reverse]" />
               </div>
               
-              <h2 className="text-7xl font-display font-bold tracking-tighter text-neural-text mb-10">
-                Chrono<span className="neural-gradient-text">Log</span>
+              <h2 className="text-4xl font-display font-medium tracking-tight text-neural-text mb-4">
+                Matter
               </h2>
-              <p className="text-white/20 font-mono text-[12px] uppercase tracking-[0.6em] max-w-2xl mb-24 leading-loose font-bold">
+              <p className="text-white/40 text-sm max-w-md mb-12 leading-relaxed">
                 Time is a sequence of milestones. Initialize a project timeline to begin tracking the infinite.
               </p>
               
               <button
                 onClick={handleNewMatter}
-                className="px-20 py-7 bg-gradient-to-r from-neural-primary via-neural-info to-neural-secondary text-neural-bg rounded-[2.5rem] font-bold uppercase tracking-[0.4em] text-[12px] hover:scale-105 transition-all shadow-[0_0_60px_rgba(0,242,255,0.2)] group"
+                className="px-8 py-3 bg-white/10 text-white hover:bg-white/20 rounded-lg font-medium text-sm transition-colors flex items-center gap-2"
               >
-                <span className="group-hover:tracking-[0.5em] transition-all duration-500 inline-block">Initialize Project Timeline</span>
+                <PlusSquare className="w-4 h-4" />
+                Initialize Project
               </button>
             </div>
           )}
@@ -260,6 +238,49 @@ export default function App() {
           )}
         </AnimatePresence>
       </main>
+
+      {/* Settings Modal */}
+      <AnimatePresence>
+        {isSettingsOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-neural-surface border border-white/10 rounded-2xl p-8 max-w-md w-full shadow-2xl"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-display font-medium flex items-center gap-2">
+                  <Settings className="w-5 h-5 text-neural-primary" />
+                  Settings
+                </h2>
+                <button onClick={() => setIsSettingsOpen(false)} className="text-white/40 hover:text-white">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-sm font-medium text-white/60 mb-3">Data Management</h3>
+                  <button
+                    onClick={() => {
+                      handlePurge();
+                      setIsSettingsOpen(false);
+                    }}
+                    className="w-full py-3 px-4 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl flex items-center justify-center gap-2 transition-colors border border-red-500/20"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Purge All Data
+                  </button>
+                  <p className="text-xs text-white/40 mt-2 text-center">
+                    Warning: This action is irreversible and will delete all projects and logs.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Temporal Command Palette */}
       <AnimatePresence>

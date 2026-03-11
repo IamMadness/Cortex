@@ -9,9 +9,10 @@ interface SidebarProps {
   onSelectMatter: (id: number | null) => void;
   onNewMatter: () => void;
   onPurge: () => void;
+  onOpenSettings: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeMatterId, onSelectMatter, onNewMatter, onPurge }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ activeMatterId, onSelectMatter, onNewMatter, onPurge, onOpenSettings }) => {
   const matters = useLiveQuery(() => db.matters.toArray());
   const [tagInput, setTagInput] = useState('');
 
@@ -57,150 +58,129 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMatterId, onSelectMatter
     }
   };
 
+  const renderMatter = (matter: any, level: number = 0) => {
+    const children = matters?.filter(m => m.parentMatterId === matter.id) || [];
+    
+    return (
+      <div key={matter.id}>
+        <motion.div
+          layout
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -10 }}
+          onClick={() => onSelectMatter(matter.id!)}
+          className={`group flex flex-col p-2 rounded-lg cursor-pointer transition-colors ${
+            activeMatterId === matter.id
+              ? 'bg-white/10'
+              : 'hover:bg-white/5'
+          }`}
+          style={{ marginLeft: `${level * 12}px` }}
+        >
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2">
+              {level > 0 && <div className="w-3 h-px bg-white/20" />}
+              <span className={`text-sm font-medium truncate max-w-[140px] ${
+                activeMatterId === matter.id ? 'text-neural-text' : 'text-white/60 group-hover:text-white/80'
+              }`}>
+                {matter.title}
+              </span>
+            </div>
+            
+            <button
+              onClick={(e) => handleDeleteMatter(e, matter.id!)}
+              className={`opacity-0 group-hover:opacity-100 p-1 rounded-md transition-colors ${
+                confirmDelete === matter.id 
+                  ? 'bg-red-500/20 text-red-400 opacity-100' 
+                  : 'text-white/40 hover:text-red-400 hover:bg-red-500/10'
+              }`}
+              title={confirmDelete === matter.id ? "Click again to confirm" : "Delete Project"}
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          {/* Cluster Tags */}
+          {matter.tags && matter.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-2" style={{ marginLeft: level > 0 ? '20px' : '0' }}>
+              {matter.tags.map((tag: string) => (
+                <span key={tag} className="px-1.5 py-0.5 bg-white/5 rounded text-[9px] font-medium text-white/40 flex items-center gap-1 group/tag">
+                  {tag}
+                  {activeMatterId === matter.id && (
+                    <button onClick={(e) => { e.stopPropagation(); removeTag(matter.id!, tag); }} className="hover:text-white opacity-0 group-hover/tag:opacity-100 transition-opacity">
+                      <X className="w-2 h-2" />
+                    </button>
+                  )}
+                </span>
+              ))}
+            </div>
+          )}
+          {activeMatterId === matter.id && (
+            <div className="mt-2" style={{ marginLeft: level > 0 ? '20px' : '0' }}>
+              <input 
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={(e) => handleAddTag(e, matter.id!)}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-transparent border-none focus:ring-0 p-0 text-[10px] w-full text-white/60 placeholder-white/20"
+                placeholder="+ Add tag..."
+              />
+            </div>
+          )}
+        </motion.div>
+        {children.map(child => renderMatter(child, level + 1))}
+      </div>
+    );
+  };
+
   return (
-    <aside className="w-[320px] h-screen bg-neural-bg/50 backdrop-blur-3xl border-r border-white/5 flex flex-col relative z-20">
+    <aside className="w-[280px] h-screen bg-neural-bg border-r border-white/5 flex flex-col relative z-20">
       {/* Sidebar Header */}
-      <div className="p-8 border-b border-white/5">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="w-12 h-12 bg-gradient-to-br from-neural-primary to-neural-info rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(0,242,255,0.2)]">
-            <Radar className="w-7 h-7 text-neural-bg" />
-          </div>
-          <div>
-            <h1 className="text-xl font-display text-neural-text font-bold tracking-tight">
-              Chrono<span className="text-neural-primary">Log</span>
-            </h1>
-            <p className="text-[9px] font-mono text-white/20 uppercase tracking-[0.3em] font-bold">Temporal_OS_v1</p>
-          </div>
+      <div className="p-4 border-b border-white/5">
+        <div className="flex items-center gap-2 mb-4">
+          <Radar className="w-4 h-4 text-neural-primary" />
+          <h1 className="text-base font-display text-neural-text font-medium tracking-tight">
+            Matter
+          </h1>
         </div>
 
         <button
           onClick={onNewMatter}
-          className="w-full py-4 bg-neural-primary/10 hover:bg-neural-primary text-neural-primary hover:text-neural-bg border border-neural-primary/20 rounded-2xl flex items-center justify-center gap-3 transition-all duration-500 group shadow-[0_0_20px_rgba(0,242,255,0.05)]"
+          className="w-full py-2 text-white/60 hover:text-neural-text hover:bg-white/5 rounded-lg flex items-center justify-center gap-2 transition-colors border border-white/5 hover:border-white/10"
         >
-          <PlusSquare className="w-5 h-5 group-hover:scale-110 transition-transform duration-500" />
-          <span className="text-[10px] font-bold uppercase tracking-[0.3em]">New Project Timeline</span>
+          <PlusSquare className="w-4 h-4" />
+          <span className="text-xs font-medium">New Project</span>
         </button>
       </div>
 
       {/* Cluster List */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-3 custom-scrollbar">
-        <div className="px-4 mb-4 flex items-center justify-between">
-          <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.4em] font-mono">Active Projects</span>
-          <Milestone className="w-3.5 h-3.5 text-white/10" />
+      <div className="flex-1 overflow-y-auto p-4 space-y-1 custom-scrollbar">
+        <div className="px-3 mb-3 flex items-center justify-between">
+          <span className="text-[10px] font-medium text-white/40 uppercase tracking-wider">Projects</span>
         </div>
         
         <AnimatePresence mode="popLayout">
-          {matters?.map((matter) => (
-            <motion.div
-              layout
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              key={matter.id}
-              onClick={() => onSelectMatter(matter.id!)}
-              className={`group flex flex-col p-5 rounded-2xl cursor-pointer transition-all duration-500 border ${
-                activeMatterId === matter.id
-                  ? 'bg-neural-primary/10 border-neural-primary/40 shadow-[0_0_30px_rgba(0,242,255,0.05)]'
-                  : 'bg-transparent border-transparent hover:bg-white/5 hover:border-white/10'
-              }`}
-            >
-              <div className="flex items-center justify-between w-full mb-2">
-                <div className="flex items-center gap-5">
-                  <div className={`w-2.5 h-2.5 rounded-full transition-all duration-500 ${
-                    activeMatterId === matter.id 
-                      ? 'bg-neural-primary shadow-[0_0_10px_rgba(0,242,255,0.8)]' 
-                      : 'bg-white/10 group-hover:bg-white/30'
-                  }`} />
-                  <span className={`text-xs font-bold uppercase tracking-widest transition-colors duration-500 ${
-                    activeMatterId === matter.id ? 'text-neural-text' : 'text-white/40 group-hover:text-white/60'
-                  }`}>
-                    {matter.title}
-                  </span>
-                </div>
-                
-                <button
-                  onClick={(e) => handleDeleteMatter(e, matter.id!)}
-                  className={`opacity-0 group-hover:opacity-100 p-2 transition-all rounded-xl ${
-                    confirmDelete === matter.id 
-                      ? 'bg-neural-secondary/20 text-neural-secondary opacity-100' 
-                      : 'text-white/10 hover:text-neural-secondary hover:bg-neural-secondary/10'
-                  }`}
-                  title={confirmDelete === matter.id ? "Click again to confirm" : "Dissolve Timeline"}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* Cluster Tags */}
-              <div className="flex flex-wrap gap-2 mt-2">
-                {matter.tags?.map(tag => (
-                  <span key={tag} className="px-2 py-0.5 bg-white/5 rounded-lg text-[8px] font-bold uppercase tracking-widest border border-white/10 text-white/40 flex items-center gap-1 group/tag">
-                    <Hash className="w-2 h-2 opacity-50" />
-                    {tag}
-                    {activeMatterId === matter.id && (
-                      <button onClick={(e) => { e.stopPropagation(); removeTag(matter.id!, tag); }} className="hover:text-white opacity-0 group-hover/tag:opacity-100 transition-opacity">
-                        <X className="w-2 h-2" />
-                      </button>
-                    )}
-                  </span>
-                ))}
-                {activeMatterId === matter.id && (
-                  <div className="flex items-center gap-1 px-2 py-0.5 bg-white/5 rounded-lg border border-white/10">
-                    <Tag className="w-2 h-2 text-white/20" />
-                    <input 
-                      value={tagInput}
-                      onChange={(e) => setTagInput(e.target.value)}
-                      onKeyDown={(e) => handleAddTag(e, matter.id!)}
-                      onClick={(e) => e.stopPropagation()}
-                      className="bg-transparent border-none focus:ring-0 p-0 text-[8px] w-16 text-white placeholder-white/10 uppercase font-bold"
-                      placeholder="TAG..."
-                    />
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          ))}
+          {matters?.filter(m => !m.parentMatterId).map((matter) => renderMatter(matter))}
         </AnimatePresence>
         
         {matters?.length === 0 && (
-          <div className="p-12 text-center border border-dashed border-white/5 rounded-3xl">
-            <p className="text-[10px] text-white/10 uppercase tracking-[0.4em] font-mono italic">No Projects Recorded</p>
+          <div className="p-6 text-center">
+            <p className="text-xs text-white/40">No projects yet</p>
           </div>
         )}
       </div>
 
       {/* Sidebar Footer */}
-      <div className="p-8 border-t border-white/5 bg-white/5">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-2 h-2 rounded-full bg-neural-primary animate-pulse" />
-            <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest font-bold">System Stable</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={onPurge}
-              className="p-2 hover:bg-neural-secondary/10 text-white/10 hover:text-neural-secondary transition-all rounded-xl border border-transparent hover:border-neural-secondary/20"
-              title="Purge All Data"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-            <Settings className="w-4 h-4 text-white/20 hover:text-neural-primary cursor-pointer transition-colors" />
-          </div>
-        </div>
-        
-        <div className="space-y-4">
-          <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: '78%' }}
-              className="h-full bg-gradient-to-r from-neural-primary to-neural-info" 
-            />
-          </div>
-          <div className="flex justify-between text-[8px] font-mono text-white/10 uppercase tracking-widest font-bold">
-            <span>Temporal Load</span>
-            <span>78%</span>
-          </div>
-        </div>
+      <div className="p-4 border-t border-white/5 flex items-center justify-between">
+        <button 
+          onClick={onPurge}
+          className="p-2 text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-colors rounded-lg"
+          title="Purge All Data"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
+        <button onClick={onOpenSettings} className="p-2 text-white/40 hover:text-white hover:bg-white/5 transition-colors rounded-lg">
+          <Settings className="w-4 h-4" />
+        </button>
       </div>
     </aside>
   );

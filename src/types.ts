@@ -4,6 +4,7 @@ export interface Epoch {
   tags: string[];
   createdAt: number;
   updatedAt: number;
+  parentMatterId?: number;
 }
 
 export interface Node {
@@ -12,8 +13,18 @@ export interface Node {
   parentId: number | null;
   content: string;
   tags: string[];
+  links?: string[];
   color?: string;
   createdAt: number;
   updatedAt: number;
   position: number;
+  linkedMatterId?: number;
+}
+
+export interface Synapse {
+  id?: number;
+  sourceId: number;
+  targetId: number;
+  label?: string;
+  matterId: number;
 }

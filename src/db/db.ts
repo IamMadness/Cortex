@@ -6,6 +6,7 @@ export interface Epoch {
   tags: string[];
   createdAt: number;
   updatedAt: number;
+  parentMatterId?: number;
 }
 
 export interface Node {
@@ -14,21 +15,33 @@ export interface Node {
   parentId: number | null;
   content: string;
   tags: string[];
+  links?: string[];
   color?: string;
   createdAt: number;
   updatedAt: number;
   position: number;
+  linkedMatterId?: number;
+}
+
+export interface Synapse {
+  id?: number;
+  sourceId: number;
+  targetId: number;
+  label?: string;
+  matterId: number;
 }
 
 export class MattersDatabase extends Dexie {
   matters!: Table<Epoch>;
   nodes!: Table<Node>;
+  synapses!: Table<Synapse>;
 
   constructor() {
     super('MattersDatabase');
-    this.version(3).stores({
-      matters: '++id, title, *tags, createdAt, updatedAt',
-      nodes: '++id, matterId, parentId, *tags, createdAt, updatedAt, position'
+    this.version(6).stores({
+      matters: '++id, title, *tags, createdAt, updatedAt, parentMatterId',
+      nodes: '++id, matterId, parentId, *tags, *links, createdAt, updatedAt, position, linkedMatterId',
+      synapses: '++id, sourceId, targetId, matterId'
     });
   }
 }
