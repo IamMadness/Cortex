@@ -163,7 +163,11 @@ export const Node: React.FC<NodeProps> = ({
       )}
       
       <div className="flex gap-2">
-        <div id={`node-${node.id}`} className={`flex-1 rounded-lg transition-all duration-300 p-1 relative group/node hover:bg-white/[0.02] border border-transparent hover:border-white/[0.05] hover:scale-[1.01] hover:border-white/10 ${isEditing || isLevelFocused || isBranchFocused ? 'ring-1 ring-neural-primary/30 shadow-[0_0_15px_rgba(0,242,255,0.1)]' : ''}`}>
+        <div 
+          id={`node-${node.id}`} 
+          style={{ '--theme-color': currentColor.hex } as React.CSSProperties}
+          className={`flex-1 rounded-lg transition-all duration-300 p-1 relative group/node hover:bg-white/[0.02] border border-transparent hover:border-white/[0.05] hover:scale-[1.01] hover:border-[var(--theme-color)] ${isEditing || isLevelFocused || isBranchFocused ? 'ring-1 ring-neural-primary/30 shadow-[0_0_15px_rgba(0,242,255,0.1)]' : ''}`}
+        >
           <div className="absolute left-0 top-2 bottom-2 w-0.5 rounded-full transition-all duration-300 group-hover/node:w-1" style={{ backgroundColor: currentColor.hex, boxShadow: `0 0 8px ${currentColor.hex}` }} />
           <div className="pl-3">
           

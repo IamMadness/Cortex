@@ -8,7 +8,7 @@ export interface Epoch {
 }
 
 export interface Node {
-  id: number;
+  id?: number;
   matterId: number;
   parentId: number | null;
   content: string;
