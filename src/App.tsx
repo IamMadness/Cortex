@@ -56,7 +56,7 @@ export default function App() {
 
   const handleNewMatter = async () => {
     const id = await db.matters.add({
-      title: 'NEW_EPOCH_SEQUENCE',
+      title: 'NEW_PROJECT_TIMELINE',
       tags: [],
       createdAt: Date.now(),
       updatedAt: Date.now(),
@@ -65,7 +65,7 @@ export default function App() {
   };
 
   const handlePurge = async () => {
-    if (confirm('CRITICAL: Purge all neural data? This action is irreversible and will dissolve the entire cortex.')) {
+    if (confirm('CRITICAL: Purge all temporal data? This action is irreversible and will dissolve the entire timeline.')) {
       await db.matters.clear();
       await db.nodes.clear();
       setActiveMatterId(null);
@@ -80,12 +80,12 @@ export default function App() {
 
   return (
     <div className="flex h-screen bg-neural-bg text-neural-text font-sans overflow-hidden selection:bg-neural-primary selection:text-neural-bg">
-      {/* Neural Background Elements */}
+      {/* Temporal Background Elements */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neural-primary/5 blur-[120px] rounded-full animate-pulse" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neural-secondary/5 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
         
-        {/* Neural Pulses */}
+        {/* Temporal Pulses */}
         <div className="soma-pulse w-[600px] h-[600px] top-[20%] left-[30%]" />
         <div className="soma-pulse w-[400px] h-[400px] bottom-[10%] right-[20%]" style={{ animationDelay: '-5s', background: 'radial-gradient(circle, var(--color-neural-secondary) 0%, transparent 70%)' }} />
 
@@ -133,7 +133,7 @@ export default function App() {
             ) : (
               <div className="flex items-center gap-4">
                 <Compass className="w-5 h-5 text-white/10" />
-                <span className="text-[10px] font-bold text-white/10 uppercase tracking-[0.4em] font-mono">Awaiting Neural Signal</span>
+                <span className="text-[10px] font-bold text-white/10 uppercase tracking-[0.4em] font-mono">Awaiting Temporal Signal</span>
               </div>
             )}
           </div>
@@ -173,20 +173,20 @@ export default function App() {
             
             <div className="flex items-center gap-5">
               <div className="text-right hidden sm:block font-mono">
-                <p className="text-[10px] font-bold text-neural-text uppercase tracking-widest">Neural_Architect</p>
-                <p className="text-[8px] text-neural-primary/40 uppercase font-bold tracking-tighter">Cognitive Designer</p>
+                <p className="text-[10px] font-bold text-neural-text uppercase tracking-widest">Time_Weaver</p>
+                <p className="text-[8px] text-neural-primary/40 uppercase font-bold tracking-tighter">Project Architect</p>
               </div>
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-neural-primary via-neural-info to-neural-secondary p-0.5 shadow-[0_0_30px_rgba(0,242,255,0.1)] group cursor-pointer">
                 <div className="w-full h-full rounded-[14px] bg-neural-bg flex items-center justify-center text-neural-primary text-sm font-bold font-mono group-hover:bg-transparent group-hover:text-neural-bg transition-all duration-500">
-                  NA
+                  TW
                 </div>
               </div>
             </div>
           </div>
         </header>
 
-        {/* Neural Content Area */}
-        <div className="flex-1 overflow-y-auto scroll-smooth custom-scrollbar relative">
+        {/* Temporal Content Area */}
+        <div className="flex-1 overflow-auto scroll-smooth custom-scrollbar relative">
           {activeMatterId ? (
             <Thread key={activeMatterId} matterId={activeMatterId} searchQuery={threadSearchQuery} />
           ) : (
@@ -201,23 +201,23 @@ export default function App() {
               </div>
               
               <h2 className="text-7xl font-display font-bold tracking-tighter text-neural-text mb-10">
-                Neural<span className="neural-gradient-text">Cortex</span>
+                Chrono<span className="neural-gradient-text">Log</span>
               </h2>
               <p className="text-white/20 font-mono text-[12px] uppercase tracking-[0.6em] max-w-2xl mb-24 leading-loose font-bold">
-                The mind is a universe of connections. Initialize a synaptic cluster to begin mapping the infinite.
+                Time is a sequence of milestones. Initialize a project timeline to begin tracking the infinite.
               </p>
               
               <button
                 onClick={handleNewMatter}
                 className="px-20 py-7 bg-gradient-to-r from-neural-primary via-neural-info to-neural-secondary text-neural-bg rounded-[2.5rem] font-bold uppercase tracking-[0.4em] text-[12px] hover:scale-105 transition-all shadow-[0_0_60px_rgba(0,242,255,0.2)] group"
               >
-                <span className="group-hover:tracking-[0.5em] transition-all duration-500 inline-block">Initialize Synaptic Cluster</span>
+                <span className="group-hover:tracking-[0.5em] transition-all duration-500 inline-block">Initialize Project Timeline</span>
               </button>
             </div>
           )}
         </div>
 
-        {/* Neural Links Side Panel */}
+        {/* Temporal Links Side Panel */}
         <AnimatePresence>
           {isBacklinksOpen && (
             <motion.div
@@ -249,7 +249,7 @@ export default function App() {
                     <p className="text-[13px] font-bold text-neural-text uppercase tracking-widest">Synapse_Link_01</p>
                     <span className="text-[10px] font-mono text-neural-primary/60 font-bold uppercase tracking-widest">Verified</span>
                   </div>
-                  <p className="text-sm text-white/40 leading-relaxed">Cross-cluster connection detected. Neural stability within acceptable parameters.</p>
+                  <p className="text-sm text-white/40 leading-relaxed">Cross-timeline connection detected. Temporal stability within acceptable parameters.</p>
                 </div>
                 
                 <div className="text-center py-32 border border-dashed border-white/5 rounded-[2.5rem] mt-12">
@@ -261,7 +261,7 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      {/* Neural Command Palette */}
+      {/* Temporal Command Palette */}
       <AnimatePresence>
         {isCommandOpen && (
           <div className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] p-4 bg-neural-bg/90 backdrop-blur-2xl">
@@ -337,7 +337,7 @@ export default function App() {
 
                       {searchResults?.nodes.length === 0 && searchResults?.epochs.length === 0 && (
                         <div className="py-20 text-center text-[11px] font-mono text-white/10 uppercase tracking-[0.5em] font-bold">
-                          No_Neural_Matches_Found
+                          No_Temporal_Matches_Found
                         </div>
                       )}
                     </>
@@ -362,7 +362,7 @@ export default function App() {
                         ))}
                       </CommandMenu.Group>
                       
-                      <CommandMenu.Group heading="Neural Operations" className="text-[11px] font-bold uppercase tracking-[0.5em] text-white/20 px-10 py-6 mt-12 font-mono">
+                      <CommandMenu.Group heading="Temporal Operations" className="text-[11px] font-bold uppercase tracking-[0.5em] text-white/20 px-10 py-6 mt-12 font-mono">
                         <CommandMenu.Item 
                           onSelect={handleNewMatter}
                           className="flex items-center gap-8 px-10 py-6 rounded-3xl text-sm text-white/40 hover:bg-white/5 hover:text-neural-primary cursor-pointer transition-all border border-transparent hover:border-white/5"

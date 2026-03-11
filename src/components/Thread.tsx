@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/db';
 import { Node } from './Node';
-import { Plus, History, Clock, Activity, Zap, Shield, Sparkles, Eye, GitBranch, XCircle } from 'lucide-react';
+import { Plus, History, Clock, Activity, Zap, Shield, Sparkles, Eye, GitBranch, XCircle, Orbit, Rocket } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import type { Node as NodeType } from '../types';
 
@@ -100,19 +100,19 @@ export const Thread: React.FC<ThreadProps> = ({ matterId, searchQuery = '' }) =>
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-12 pb-40 relative">
+    <div className="min-w-[800px] max-w-5xl mx-auto p-12 pb-40 relative">
       <div className="mb-20 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <div className="p-5 bg-neural-primary/10 border border-neural-primary/20 rounded-[2rem] relative group shadow-[0_0_30px_rgba(0,242,255,0.1)] animate-float">
-            <Sparkles className="w-8 h-8 text-neural-primary" />
+            <Orbit className="w-8 h-8 text-neural-primary" />
             <div className="absolute inset-0 border border-neural-primary/40 animate-ping opacity-20 rounded-[2rem]" />
           </div>
           <div>
             <h2 className="text-4xl font-display font-bold tracking-tight text-neural-text">
-              Neural <span className="neural-gradient-text">Continuum</span>
+              Project <span className="neural-gradient-text">Timeline</span>
             </h2>
             <div className="flex items-center gap-4 mt-2 font-mono">
-              <span className="text-[10px] text-neural-primary/40 uppercase tracking-[0.4em] font-bold">Cortex_Sync: Active</span>
+              <span className="text-[10px] text-neural-primary/40 uppercase tracking-[0.4em] font-bold">Chrono_Sync: Active</span>
               <div className="w-1.5 h-1.5 rounded-full bg-neural-primary/40" />
               <span className="text-[10px] text-neural-primary/40 uppercase tracking-[0.4em] font-bold">Integrity: 100%</span>
             </div>
@@ -130,7 +130,7 @@ export const Thread: React.FC<ThreadProps> = ({ matterId, searchQuery = '' }) =>
             </button>
           )}
           <div className="text-right font-mono">
-            <p className="text-[10px] text-white/20 uppercase tracking-[0.3em] font-bold">Neural Lock</p>
+            <p className="text-[10px] text-white/20 uppercase tracking-[0.3em] font-bold">Temporal Lock</p>
             <p className="text-sm font-bold text-neural-primary uppercase tracking-widest">Synchronized</p>
           </div>
           <div className="w-16 h-16 rounded-[2rem] border border-white/5 flex items-center justify-center relative bg-white/5">
@@ -151,9 +151,9 @@ export const Thread: React.FC<ThreadProps> = ({ matterId, searchQuery = '' }) =>
         className="mt-20 w-full py-16 border border-dashed border-white/10 rounded-[3rem] flex flex-col items-center justify-center gap-6 text-white/20 hover:border-neural-primary/40 hover:text-neural-primary transition-all group relative overflow-hidden bg-white/5"
       >
         <div className="p-5 bg-white/5 rounded-[2rem] border border-white/10 group-hover:scale-110 group-hover:border-neural-primary/40 transition-all duration-700">
-          <Plus className="w-10 h-10 group-hover:rotate-90 transition-transform duration-700" />
+          <Rocket className="w-10 h-10 group-hover:-translate-y-2 group-hover:translate-x-2 transition-transform duration-700" />
         </div>
-        <span className="text-[11px] font-mono uppercase tracking-[0.5em] font-bold">Initialize Neuron Soma</span>
+        <span className="text-[11px] font-mono uppercase tracking-[0.5em] font-bold">Log Primary Event</span>
       </motion.button>
     </div>
   );

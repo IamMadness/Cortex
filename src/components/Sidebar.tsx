@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/db';
-import { Plus, Trash2, User, History, Compass, Anchor, Settings, Globe, Layers, Sparkles, Tag, Hash, X } from 'lucide-react';
+import { PlusSquare, Trash2, User, History, Compass, Anchor, Settings, Radar, Milestone, Sparkles, Tag, Hash, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface SidebarProps {
@@ -63,13 +63,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMatterId, onSelectMatter
       <div className="p-8 border-b border-white/5">
         <div className="flex items-center gap-4 mb-8">
           <div className="w-12 h-12 bg-gradient-to-br from-neural-primary to-neural-info rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(0,242,255,0.2)]">
-            <Globe className="w-7 h-7 text-neural-bg" />
+            <Radar className="w-7 h-7 text-neural-bg" />
           </div>
           <div>
             <h1 className="text-xl font-display text-neural-text font-bold tracking-tight">
-              Neural<span className="text-neural-primary">Cortex</span>
+              Chrono<span className="text-neural-primary">Log</span>
             </h1>
-            <p className="text-[9px] font-mono text-white/20 uppercase tracking-[0.3em] font-bold">Cortex_Interface_v9</p>
+            <p className="text-[9px] font-mono text-white/20 uppercase tracking-[0.3em] font-bold">Temporal_OS_v1</p>
           </div>
         </div>
 
@@ -77,16 +77,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMatterId, onSelectMatter
           onClick={onNewMatter}
           className="w-full py-4 bg-neural-primary/10 hover:bg-neural-primary text-neural-primary hover:text-neural-bg border border-neural-primary/20 rounded-2xl flex items-center justify-center gap-3 transition-all duration-500 group shadow-[0_0_20px_rgba(0,242,255,0.05)]"
         >
-          <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-500" />
-          <span className="text-[10px] font-bold uppercase tracking-[0.3em]">Initialize Cluster</span>
+          <PlusSquare className="w-5 h-5 group-hover:scale-110 transition-transform duration-500" />
+          <span className="text-[10px] font-bold uppercase tracking-[0.3em]">New Project Timeline</span>
         </button>
       </div>
 
       {/* Cluster List */}
       <div className="flex-1 overflow-y-auto p-6 space-y-3 custom-scrollbar">
         <div className="px-4 mb-4 flex items-center justify-between">
-          <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.4em] font-mono">Synaptic Sectors</span>
-          <Layers className="w-3.5 h-3.5 text-white/10" />
+          <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.4em] font-mono">Active Projects</span>
+          <Milestone className="w-3.5 h-3.5 text-white/10" />
         </div>
         
         <AnimatePresence mode="popLayout">
@@ -125,7 +125,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMatterId, onSelectMatter
                       ? 'bg-neural-secondary/20 text-neural-secondary opacity-100' 
                       : 'text-white/10 hover:text-neural-secondary hover:bg-neural-secondary/10'
                   }`}
-                  title={confirmDelete === matter.id ? "Click again to confirm" : "Dissolve Cluster"}
+                  title={confirmDelete === matter.id ? "Click again to confirm" : "Dissolve Timeline"}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -164,7 +164,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMatterId, onSelectMatter
         
         {matters?.length === 0 && (
           <div className="p-12 text-center border border-dashed border-white/5 rounded-3xl">
-            <p className="text-[10px] text-white/10 uppercase tracking-[0.4em] font-mono italic">No Clusters Recorded</p>
+            <p className="text-[10px] text-white/10 uppercase tracking-[0.4em] font-mono italic">No Projects Recorded</p>
           </div>
         )}
       </div>
@@ -174,7 +174,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMatterId, onSelectMatter
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 rounded-full bg-neural-primary animate-pulse" />
-            <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest font-bold">Cortex Stable</span>
+            <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest font-bold">System Stable</span>
           </div>
           <div className="flex items-center gap-3">
             <button 
@@ -197,7 +197,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMatterId, onSelectMatter
             />
           </div>
           <div className="flex justify-between text-[8px] font-mono text-white/10 uppercase tracking-widest font-bold">
-            <span>Neural Load</span>
+            <span>Temporal Load</span>
             <span>78%</span>
           </div>
         </div>

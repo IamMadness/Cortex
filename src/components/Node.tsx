@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, Trash2, CornerDownRight, Clock, Anchor, ChevronRight, Tag, Hash, Palette, Eye, GitBranch } from 'lucide-react';
+import { Plus, Trash2, CornerDownRight, Clock, Anchor, ChevronRight, Tag, Hash, Palette, Eye, GitBranch, GitMerge, Timer } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Node as NodeType } from '../types';
@@ -92,11 +92,15 @@ export const Node: React.FC<NodeProps> = ({ node, level, onAddChild, onDelete, o
       style={{ marginLeft: `${level * 2.5}rem` }}
     >
       {level > 0 && (
-        <div className="absolute -left-6 top-0 bottom-0 w-px bg-gradient-to-b from-neural-primary/20 via-transparent to-transparent" />
+        <>
+          <div className="absolute -left-6 top-10 bottom-[-2rem] w-px bg-gradient-to-b from-neural-primary/40 via-neural-primary/10 to-transparent" />
+          <div className="absolute -left-6 top-10 w-6 h-px bg-neural-primary/40" />
+          <div className="absolute -left-[1.65rem] top-[2.25rem] w-1.5 h-1.5 rounded-full bg-neural-primary shadow-[0_0_10px_rgba(0,242,255,0.8)]" />
+        </>
       )}
       
       <div className="flex gap-4">
-        <div className={`flex-1 rounded-[2rem] border transition-all duration-700 p-7 relative overflow-hidden neuron-soma ${
+        <div className={`flex-1 rounded-[2rem] border transition-all duration-700 p-7 relative overflow-hidden temporal-log ${
           isEditing 
             ? 'bg-neural-surface border-neural-primary/40 shadow-[0_0_50px_rgba(0,242,255,0.1)]' 
             : `bg-neural-surface/30 border-white/5 ${currentColor.class}`
@@ -105,8 +109,8 @@ export const Node: React.FC<NodeProps> = ({ node, level, onAddChild, onDelete, o
           <div className="flex items-center justify-between mb-5 border-b border-white/5 pb-4">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/10">
-                <Clock className="w-3 h-3 text-neural-primary" />
-                <span className="text-[10px] font-mono text-white/60 font-bold tracking-tight">{formattedTime}</span>
+                <Timer className="w-3 h-3 text-neural-primary" />
+                <span className="text-[10px] font-mono text-white/60 font-bold tracking-tight">[T-SYNC: {formattedTime}]</span>
               </div>
               <div className="flex gap-2">
                 {node.tags?.map(tag => (
@@ -162,7 +166,7 @@ export const Node: React.FC<NodeProps> = ({ node, level, onAddChild, onDelete, o
               onBlur={handleBlur}
               onKeyDown={handleKeyDown}
               className="w-full bg-transparent border-none focus:ring-0 p-0 text-neural-text font-sans text-base leading-relaxed placeholder-white/10 resize-none"
-              placeholder="Form a new synaptic connection..."
+              placeholder="Log new temporal event..."
             />
           ) : (
             <div 
@@ -172,7 +176,7 @@ export const Node: React.FC<NodeProps> = ({ node, level, onAddChild, onDelete, o
               {content ? (
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
               ) : (
-                <span className="text-white/10 italic font-mono text-xs tracking-[0.2em] uppercase">Awaiting neural impulse...</span>
+                <span className="text-white/10 italic font-mono text-xs tracking-[0.2em] uppercase">Awaiting temporal input...</span>
               )}
             </div>
           )}
@@ -182,10 +186,10 @@ export const Node: React.FC<NodeProps> = ({ node, level, onAddChild, onDelete, o
               <button
                 onClick={() => onAddChild(node.id)}
                 className="flex items-center gap-2 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-neural-primary hover:bg-neural-primary hover:text-neural-bg transition-all border border-neural-primary/20 rounded-2xl bg-neural-primary/5"
-                title="Create Synapse"
+                title="Branch Timeline"
               >
-                <CornerDownRight className="w-4 h-4" />
-                Synapse
+                <GitMerge className="w-4 h-4" />
+                Branch
               </button>
               
               <div className="w-px h-4 bg-white/10 mx-1" />
@@ -195,10 +199,10 @@ export const Node: React.FC<NodeProps> = ({ node, level, onAddChild, onDelete, o
                 className={`flex items-center gap-2 px-3 py-2 text-[9px] font-bold uppercase tracking-widest transition-all border rounded-xl ${
                   isLevelFocused ? 'bg-neural-primary text-neural-bg border-neural-primary' : 'text-white/40 border-white/10 hover:border-neural-primary/40 hover:text-neural-primary'
                 }`}
-                title="Focus Level"
+                title="Isolate Epoch"
               >
                 <Eye className="w-3.5 h-3.5" />
-                Level
+                Epoch
               </button>
               
               <button
@@ -206,17 +210,17 @@ export const Node: React.FC<NodeProps> = ({ node, level, onAddChild, onDelete, o
                 className={`flex items-center gap-2 px-3 py-2 text-[9px] font-bold uppercase tracking-widest transition-all border rounded-xl ${
                   isBranchFocused ? 'bg-neural-primary text-neural-bg border-neural-primary' : 'text-white/40 border-white/10 hover:border-neural-primary/40 hover:text-neural-primary'
                 }`}
-                title="Focus Branch"
+                title="Isolate Timeline"
               >
                 <GitBranch className="w-3.5 h-3.5" />
-                Branch
+                Timeline
               </button>
             </div>
             
             <div className="flex items-center gap-4">
               <div className="hidden xl:flex items-center gap-2 text-[9px] font-mono text-white/20 uppercase tracking-widest font-bold">
                 <Anchor className="w-3.5 h-3.5" />
-                Synaptic Integrity: 100%
+                Temporal Integrity: 100%
               </div>
               
               <button
@@ -233,7 +237,7 @@ export const Node: React.FC<NodeProps> = ({ node, level, onAddChild, onDelete, o
                     ? 'bg-neural-secondary/20 text-neural-secondary border-neural-secondary/40' 
                     : 'text-white/10 border-transparent hover:text-neural-secondary hover:border-neural-secondary/20 hover:bg-neural-secondary/5'
                 }`}
-                title={confirmDelete ? "Click again to sever" : "Sever Connection"}
+                title={confirmDelete ? "Click again to erase" : "Erase Log"}
               >
                 <Trash2 className="w-4.5 h-4.5" />
               </button>
